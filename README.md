@@ -5,16 +5,17 @@ A simple in-game developer console with easy-to-implement commands and scripting
 ![Example](https://i.imgur.com/hWwjmZl.gif)
 
 #### Features
-- Easily implement new commands with no configuration or setup time
+- Easily code new commands with no additional setup - just implement the command class!
 - Some default/starter commands are included
 - Modular and extensible components
 - Tons of events to hook into. This includes `UnityEvent`, inheritable class events, and `static Action` events
-- Working console prefab included
-- Command and input history
+- Navigable command and input history
+- Working console prefab included, ready to be customized!
 
 #### Todo
 - Some functions/classes need additional documentation
 - Scripting for executing a series of commands from a text file or string
+- Configurable commands that can be created in the inspector with `UnityEvent` and require no coding.
 
 # Getting Started
 1. Import the package or Github content into your Assets folder
