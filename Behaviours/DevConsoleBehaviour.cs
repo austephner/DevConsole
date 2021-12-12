@@ -21,7 +21,9 @@ namespace DevConsole.Behaviours
             onClosed,
             onClear;
 
-        public static event Action<string> onPrint;
+        public static event Action<string> 
+            onPrint,
+            onInputBufferChanged;
 
         #endregion
         
@@ -29,6 +31,12 @@ namespace DevConsole.Behaviours
 
         [Header("General"), SerializeField] 
         protected bool _logUnityEventsToConsole;
+
+        [SerializeField]
+        protected bool _startsOpen;
+        
+        [SerializeField]
+        protected bool _openOnStart;
 
         [SerializeField] 
         protected bool _logCommandsToConsole;
@@ -70,7 +78,8 @@ namespace DevConsole.Behaviours
         [SerializeField] 
         protected StringUnityEvent 
             _onSubmit,
-            _onPrint;
+            _onPrint,
+            _onInputBufferChanged;
 
         #endregion
 
@@ -91,7 +100,16 @@ namespace DevConsole.Behaviours
 
         public static DevConsoleBehaviour Instance { get; private set; }
 
-        public string inputBuffer { get; set; } = "";
+        public string inputBuffer
+        {
+            get => _inputBuffer;
+            set
+            {
+                _inputBuffer = value;
+                onInputBufferChanged?.Invoke(value);
+                _onInputBufferChanged?.Invoke(value);
+            }
+        }
 
         public bool isOpen => _open;
 
@@ -108,6 +126,8 @@ namespace DevConsole.Behaviours
         protected List<string> _inputHistory = new List<string>();
 
         protected int _historyPosition = 0;
+
+        protected string _inputBuffer;
 
         #endregion
 
@@ -129,9 +149,12 @@ namespace DevConsole.Behaviours
             Instance = this;
 
             _devConsoleCommands = 
-                TypeUtil.GetNonAbstractSubTypes(typeof(DevConsoleBehaviourCommand))
+                TypeUtil.GetNonAbstractSubTypes(typeof(DevConsoleCommand))
                     .Select(devConsoleCommand => (DevConsoleCommand) Activator.CreateInstance(devConsoleCommand))
                     .ToList();
+
+            if (_startsOpen) _open = true;
+            if (_openOnStart) Open();
             
             OnInitialize();
             onInitialized?.Invoke();
@@ -202,7 +225,7 @@ namespace DevConsole.Behaviours
 
         protected void DebugLogToConsole(string message, string function)
         {
-            Debug.Log(string.Format(DEBUG_LOG_FORMAT, message, function));
+            Debug.Log(string.Format(DEBUG_LOG_FORMAT, function, message));
         }
 
         /// <summary>
@@ -217,6 +240,7 @@ namespace DevConsole.Behaviours
 
                 if (_inputHistory.Count > _maxHistory)
                 {
+                    _consoleDisplayBehaviour?.RemoveHistoryAt(0);
                     _inputHistory.RemoveAt(0);
                 }
 
@@ -224,7 +248,7 @@ namespace DevConsole.Behaviours
             }
             else
             {
-                text = "";
+                return;
             }
 
             var formattedInput = text.Trim().Split(' ');
@@ -280,12 +304,18 @@ namespace DevConsole.Behaviours
                     Clear();
                     break;
                 case DevConsoleBehaviourCommand.GoBackInHistory:
-                    _historyPosition = Mathf.Clamp(_historyPosition + 1, 0, _inputHistory.Count);
-                    inputBuffer = _inputHistory[_historyPosition];
+                    if (_inputHistory.Count > 0)
+                    {
+                        _historyPosition = Mathf.Clamp(_historyPosition - 1, 0, _inputHistory.Count - 1);
+                        inputBuffer = _inputHistory[_historyPosition];
+                    }
                     break;
                 case DevConsoleBehaviourCommand.GoForwardInHistory:
-                    _historyPosition = Mathf.Clamp(_historyPosition - 1, 0, _inputHistory.Count -1);
-                    inputBuffer = _inputHistory[_historyPosition];
+                    if (_inputHistory.Count > 0)
+                    {
+                        _historyPosition = Mathf.Clamp(_historyPosition + 1, 0, _inputHistory.Count - 1);
+                        inputBuffer = _inputHistory[_historyPosition];
+                    }
                     break;
             }
         }
@@ -295,6 +325,8 @@ namespace DevConsole.Behaviours
         /// </summary>
         public void Open()
         {
+            if (_open) return;
+            
             _open = true;
             OnOpenClosedStateChanged();
             onOpen?.Invoke();
@@ -306,6 +338,8 @@ namespace DevConsole.Behaviours
         /// </summary>
         public void Close()
         {
+            if (!_open) return;
+            
             _open = false;
             OnOpenClosedStateChanged();
             onClosed?.Invoke();
@@ -389,6 +423,8 @@ namespace DevConsole.Behaviours
                 devConsoleCommand.GetNames()
                     .Any(commandName => commandName.ToLower() == searchCommandName.ToLower().Trim()));
         }
+
+        public List<DevConsoleCommand> GetAllRegisteredCommands() => _devConsoleCommands;
 
         #endregion
     }

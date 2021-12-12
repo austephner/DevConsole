@@ -10,5 +10,6 @@ namespace DevConsole.Behaviours
     {
         public abstract void Print(string text, DevConsolePrintType printType);
         public abstract void Clear();
+        public abstract void RemoveHistoryAt(int index);
     }
 }
