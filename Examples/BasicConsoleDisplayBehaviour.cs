@@ -54,6 +54,7 @@ namespace DevConsole.Examples
             {
                 var displayText = _displayTexts[i];
                 DestroyImmediate(displayText.gameObject);
+                _displayTexts.RemoveAt(i);
             }
             
             LayoutRebuilder.ForceRebuildLayoutImmediate(contentLayoutGroup);

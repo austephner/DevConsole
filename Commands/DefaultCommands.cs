@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using CommandConsole;
 using DevConsole.Behaviours;
 
 namespace DevConsole.Commands
