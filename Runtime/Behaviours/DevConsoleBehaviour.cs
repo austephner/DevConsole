@@ -25,6 +25,10 @@ namespace DevConsole.Runtime.Behaviours
             onPrint,
             onInputBufferChanged;
 
+        public static event Action<bool>
+            onDevModeStateChanged,
+            onCheatModeStateChanged;
+
         #endregion
         
         #region Settings
@@ -51,7 +55,23 @@ namespace DevConsole.Runtime.Behaviours
         [SerializeField,
         Tooltip("When enabled the console will clear the input buffer after \"Submit()\" is called.")] 
         protected bool _clearInputBufferAfterSubmit = true;
+        
+        [SerializeField,
+        Tooltip("This enables the ability to use \"dev mode only\" commands.")] 
+        protected bool _allowDevModeCommands = true;
+        
+        [SerializeField,
+        Tooltip("Enables \"Dev Mode\" for this console when the game object starts. \"AllowDevModeCommands\" must be true in order for it to work.")] 
+        protected bool _enableDevModeOnStart;
 
+        [SerializeField,
+         Tooltip("This enables the ability to use \"cheat mode only\" commands.")] 
+        protected bool _allowCheatModeCommands = false;
+        
+        [SerializeField,
+         Tooltip("Enables \"Cheat Mode\" for this console when the game object starts. \"AllowCheatModeCommands\" must be true in order for it to work.")] 
+        protected bool _enableCheatModeOnStart;
+        
         [SerializeField] 
         protected float _maxHistory = 100;
 
@@ -92,7 +112,11 @@ namespace DevConsole.Runtime.Behaviours
             UNITY_EVENT_INIT_SUCCESS = "Successfully initialized developer console.", 
             UNITY_EVENT_DISABLE = "Shutting down developer console.",
             ERROR_COMMAND_DOESNT_EXIST = "\"{0}\" is not a command.",
-            LOG_COMMAND = "Executing command named \"{0}\" with arguments \"{1}\"";
+            LOG_COMMAND = "Executing command named \"{0}\" with arguments \"{1}\"",
+            DEV_MODE_ONLY = "Please enable dev mode to use this command.",
+            DEV_MODE_DISABLED = "Cannot set dev mode, its usage has been disabled.",
+            CHEAT_MODE_ONLY = "Cheats not allowed.",
+            CHEAT_MODE_DISABLED = "Cannot set cheat mode, its usage has been disabled.";
 
         #endregion
 
@@ -115,11 +139,15 @@ namespace DevConsole.Runtime.Behaviours
 
         public bool isClosed => !isOpen;
 
+        public bool devMode => _devMode;
+
+        public bool cheatMode => _cheatMode;
+
         #endregion
 
         #region Protected Fields
 
-        protected bool _open;
+        protected bool _open, _cheatMode, _devMode;
 
         protected List<DevConsoleCommand> _devConsoleCommands = new List<DevConsoleCommand>();
 
@@ -155,6 +183,8 @@ namespace DevConsole.Runtime.Behaviours
 
             if (_startsOpen) _open = true;
             if (_openOnStart) Open();
+            if (_enableCheatModeOnStart) SetCheatMode(true);
+            if (_enableDevModeOnStart) SetDevMode(true);
             
             OnInitialize();
             onInitialized?.Invoke();
@@ -261,6 +291,18 @@ namespace DevConsole.Runtime.Behaviours
 
                 if (command != null)
                 {
+                    if (command.cheatModeOnly && (!_allowCheatModeCommands || !_cheatMode))
+                    {
+                        Print(CHEAT_MODE_ONLY, DevConsolePrintType.Error);
+                        return;
+                    }
+
+                    if (command.devModeOnly && (!_allowDevModeCommands || !_devMode))
+                    {
+                        Print(DEV_MODE_ONLY, DevConsolePrintType.Error);
+                        return;
+                    }
+                    
                     if (_logCommandsToConsole) DebugLogToConsole(string.Format(LOG_COMMAND, commandText, string.Join(",", arguments)), "ParseText");
                     command.Execute(arguments);
                     OnCommandExecuted(command, arguments);
@@ -426,6 +468,42 @@ namespace DevConsole.Runtime.Behaviours
 
         public List<DevConsoleCommand> GetAllRegisteredCommands() => _devConsoleCommands;
 
+        public void SetCheatMode(bool cheatMode)
+        {
+            if (!_allowCheatModeCommands)
+            {
+                if (_logUnityEventsToConsole) Debug.LogError(CHEAT_MODE_DISABLED);
+
+                if (_cheatMode)
+                {
+                    _cheatMode = false;
+                    onCheatModeStateChanged?.Invoke(false);
+                }
+                return;
+            }
+
+            _cheatMode = cheatMode;
+            onCheatModeStateChanged?.Invoke(cheatMode);
+        }
+
+        public void SetDevMode(bool devMode)
+        {
+            if (!_allowDevModeCommands)
+            {
+                if (_logUnityEventsToConsole) Debug.LogError(DEV_MODE_DISABLED);
+                
+                if (_devMode)
+                {
+                    _devMode = false;
+                    onDevModeStateChanged?.Invoke(false);
+                }
+                return;
+            }
+
+            _devMode = devMode;
+            onDevModeStateChanged?.Invoke(devMode);
+        }
+        
         #endregion
     }
 }

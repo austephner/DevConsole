@@ -5,14 +5,24 @@ namespace DevConsole.Runtime.Commands
     public abstract class DevConsoleCommand
     {
         /// <summary>
+        /// This command can only be ran during dev mode.
+        /// </summary>
+        public virtual bool devModeOnly { get; }
+        
+        /// <summary>
+        /// This command can only be ran during cheat mode.
+        /// </summary>
+        public virtual bool cheatModeOnly { get; }
+        
+        /// <summary>
         /// Gets a list of all names this console command could be recognized by.
         /// </summary>
         public abstract string[] GetNames();
-        
+
         /// <summary>
         /// Gets a string with helpful information about this command.
         /// </summary>
-        public abstract string GetHelp();
+        public virtual string GetHelp() => "none"; 
         
         /// <summary>
         /// Called when this command is executed by the console.

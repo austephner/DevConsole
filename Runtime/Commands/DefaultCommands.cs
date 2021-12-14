@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DevConsole.Runtime.Behaviours;
+using DevConsole.Runtime.Enums;
 
 namespace DevConsole.Runtime.Commands
 {
@@ -45,13 +46,45 @@ namespace DevConsole.Runtime.Commands
             {
                 foreach (var command in DevConsoleBehaviour.Instance.GetAllRegisteredCommands())
                 {
-                    DevConsoleBehaviour.Instance.Print($"{string.Join(", ", command.GetNames())} --> <i> {command.GetHelp()}</i>");
+                    if (command.cheatModeOnly && !DevConsoleBehaviour.Instance.cheatMode)
+                    {
+                        continue;
+                    }
+
+                    if (command.devModeOnly && !DevConsoleBehaviour.Instance.devMode)
+                    {
+                        continue;
+                    }
+
+                    var help = command.GetHelp();
+
+                    if (string.IsNullOrWhiteSpace(help))
+                    {
+                        continue;
+                    }
+                    
+                    DevConsoleBehaviour.Instance.Print($"{string.Join(", ", command.GetNames())} --> <i> {help}</i>");
                 }
             }
             else
             {
-                DevConsoleBehaviour.Instance.Print(DevConsoleBehaviour.Instance.GetCommandByName(parameters[0]).GetHelp());
+                var command = DevConsoleBehaviour.Instance.GetCommandByName(parameters[0]);
+
+                if (command == null || 
+                    command.cheatModeOnly && !DevConsoleBehaviour.Instance.cheatMode ||
+                    command.devModeOnly && !DevConsoleBehaviour.Instance.devMode)
+                {
+                    PrintNotAvailable();
+                    return;
+                }
+                
+                DevConsoleBehaviour.Instance.Print(command.GetHelp());
             }
+        }
+
+        private void PrintNotAvailable()
+        {
+            DevConsoleBehaviour.Instance.Print("Help for this command is not available.", DevConsolePrintType.Error);
         }
     }
 
