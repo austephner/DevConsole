@@ -45,7 +45,7 @@ Note that this API does come with some default commands, but to embrace the powe
 The system uses C# Reflection to find commands. All you have to do is implement the `DevConsoleCommand` class and start the game.
 ```c#
 using System.Collections.Generic;
-using DevConsole.Behaviours;
+using DevConsole;
 
 public class HelloWorldCommand : DevConsoleCommand 
 {
@@ -55,19 +55,28 @@ public class HelloWorldCommand : DevConsoleCommand
             return new string[] {"helloworld", "hw"};
         }
 
-        // The text displayed when the "help helloworld" or "help hw" command is executed
+        // The action that actually happens when this command is executed.
+        public override void Execute(List<string> parameters)
+        {
+            DevConsole.Print("Hello world!");
+        }
+        
+        // (OPTIONAL) The text displayed when the "help helloworld" or "help hw" command is executed
         public override string GetHelp()
         {
             return "Displays \"Hello World\" into the console.";
         }
-
-        // The action that actually happens when this command is executed.
-        public override void Execute(List<string> parameters)
-        {
-            DevConsoleBehaviour.Instance.Print("Hello world!");
-        }
+        
+        // (OPTIONAL) Denotes whether or not this command can only be run in "dev mode"
+        public override bool devModeOnly => false;
+        
+        // (OPTIONAL) Denotes whether or not this command can only be run in "cheat mode"
+        public override bool cheatModeOnly => false;
 }
 ```
+
+# Tips 
+- You don't need to use `DevConsoleBehaviour.Instance` to call console functions. You can simply reference `DevConsole` instead which is a static class that allows for shorthand/convenient calling of the `DevConsoleBehaviour` instance.
 
 # Credits
 Thanks to the [Unity Discord Community](https://discord.com/invite/unity) for helping settle the package issues with this repo.

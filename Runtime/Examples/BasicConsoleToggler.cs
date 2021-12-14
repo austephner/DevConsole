@@ -1,5 +1,4 @@
-﻿using DevConsole.Behaviours;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DevConsole.Examples
 {
