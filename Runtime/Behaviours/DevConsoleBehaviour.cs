@@ -7,6 +7,7 @@ using DevConsole.Enums;
 using DevConsole.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace DevConsole.Behaviours
 {
@@ -33,23 +34,27 @@ namespace DevConsole.Behaviours
         
         #region Settings
 
-        [Header("General"), SerializeField] 
-        protected bool _logUnityEventsToConsole;
+        [Header("General"), SerializeField, FormerlySerializedAs("_logUnityEventsToConsole"),
+        Tooltip("When enabled, this DevConsoleBehaviour will regularly log information to the console such as " +
+                "exceptions, invocations, etc.")] 
+        protected bool _debug;
 
-        [SerializeField]
+        [SerializeField,
+        Tooltip("Enable if this DevConsoleBehaviour is considered open when the game starts.")]
         protected bool _startsOpen;
         
-        [SerializeField]
+        [SerializeField,
+        Tooltip("When enabled, \"Open()\" will be called when this DevConsoleBehaviour starts and" +
+                " automatically open.")]
         protected bool _openOnStart;
 
-        [SerializeField] 
-        protected bool _logCommandsToConsole;
-
-        [SerializeField] 
-        protected bool _logUnityApplicationMessages;
+        [SerializeField,
+        Tooltip("When enabled, Unity console logs will appear in this DevConsoleBehaviour. Avoid toggling this field during runtime.")] 
+        protected bool _printUnityConsoleLogs;
         
         [SerializeField,
-        Tooltip("If the user attempts to submit a command that doesn't exist, the console will print an error message.")] 
+        Tooltip("If the user attempts to submit a command that doesn't exist, the console will print an " +
+                "error message.")] 
         protected bool _showCommandDoesntExistError = true;
 
         [SerializeField,
@@ -57,22 +62,25 @@ namespace DevConsole.Behaviours
         protected bool _clearInputBufferAfterSubmit = true;
         
         [SerializeField,
-        Tooltip("This enables the ability to use \"dev mode only\" commands.")] 
-        protected bool _allowDevModeCommands = true;
+        Tooltip("Allows the usage of \"Dev Mode\". When disabled, \"SetDevMode(...)\" cannot be called and " +
+                "dev-mode-only commands cannot be executed..")] 
+        protected bool _allowDevMode = true;
         
         [SerializeField,
-        Tooltip("Enables \"Dev Mode\" for this console when the game object starts. \"AllowDevModeCommands\" must be true in order for it to work.")] 
+        Tooltip("When enabled, this DevConsoleBehaviour will enter \"Dev Mode\" on start if possible.")] 
         protected bool _enableDevModeOnStart;
 
-        [SerializeField,
-         Tooltip("This enables the ability to use \"cheat mode only\" commands.")] 
-        protected bool _allowCheatModeCommands = false;
+        [FormerlySerializedAs("_allowCheatModeCommands"), SerializeField,
+         Tooltip("Allows the usage of \"Cheat Mode\". When disabled, \"SetCheatMode(...)\" cannot be called and" +
+                 "cheat-mode-only commands cannot be executed.")] 
+        protected bool _allowCheatMode = false;
         
         [SerializeField,
-         Tooltip("Enables \"Cheat Mode\" for this console when the game object starts. \"AllowCheatModeCommands\" must be true in order for it to work.")] 
+         Tooltip("When enabled, this DevConsoleBehaviour will enter \"Cheat Mode\" on start if possible.")] 
         protected bool _enableCheatModeOnStart;
         
-        [SerializeField] 
+        [SerializeField,
+        Tooltip("The total number of entries the console will remember.")] 
         protected float _maxHistory = 100;
 
         [Header("Components"), SerializeField,
@@ -112,7 +120,6 @@ namespace DevConsole.Behaviours
             UNITY_EVENT_INIT_SUCCESS = "Successfully initialized developer console.", 
             UNITY_EVENT_DISABLE = "Shutting down developer console.",
             ERROR_COMMAND_DOESNT_EXIST = "\"{0}\" is not a command.",
-            LOG_COMMAND = "Executing command named \"{0}\" with arguments \"{1}\"",
             DEV_MODE_ONLY = "Please enable dev mode to use this command.",
             DEV_MODE_DISABLED = "Cannot set dev mode, its usage has been disabled.",
             CHEAT_MODE_ONLY = "Cheats not allowed.",
@@ -163,16 +170,16 @@ namespace DevConsole.Behaviours
 
         private void OnEnable()
         {
-            if (_logUnityEventsToConsole) DebugLogToConsole(UNITY_EVENT_INITIALIZE, "OnEnable");
+            if (_debug) DebugLogToConsole(UNITY_EVENT_INITIALIZE, "OnEnable");
 
             if (Instance && Instance != this)
             {
-                if (_logUnityEventsToConsole) DebugLogToConsole(UNITY_EVENT_INIT_FAILED, "OnEnable");
+                if (_debug) DebugLogToConsole(UNITY_EVENT_INIT_FAILED, "OnEnable");
                 DestroyImmediate(gameObject);
                 return;
             }
 
-            if (_logUnityEventsToConsole) DebugLogToConsole(UNITY_EVENT_INIT_SUCCESS, "OnEnable");
+            if (_debug) DebugLogToConsole(UNITY_EVENT_INIT_SUCCESS, "OnEnable");
             
             Instance = this;
 
@@ -181,8 +188,9 @@ namespace DevConsole.Behaviours
                     .Select(devConsoleCommand => (DevConsoleCommand) Activator.CreateInstance(devConsoleCommand))
                     .ToList();
 
+            if (_printUnityConsoleLogs) Application.logMessageReceived += OnUnityLog;
             if (_startsOpen) _open = true;
-            if (_openOnStart) Open();
+            if (_openOnStart && !_open) Open();
             if (_enableCheatModeOnStart) SetCheatMode(true);
             if (_enableDevModeOnStart) SetDevMode(true);
             
@@ -195,7 +203,8 @@ namespace DevConsole.Behaviours
         {
             if (Instance == this)
             {
-                if (_logUnityEventsToConsole) DebugLogToConsole(UNITY_EVENT_DISABLE, "OnDisable");
+                if (_debug) DebugLogToConsole(UNITY_EVENT_DISABLE, "OnDisable");
+                if (_printUnityConsoleLogs) Application.logMessageReceived -= OnUnityLog;
                 
                 OnShutdown();
                 onShutdown?.Invoke();
@@ -249,6 +258,34 @@ namespace DevConsole.Behaviours
         /// <param name="arguments">Any arguments that were used while executing the command.</param>
         protected virtual void OnCommandExecuted(DevConsoleCommand command, List<string> arguments) { }
 
+        /// <summary>
+        /// Invoked when a Unity log is made.
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="stackTrace"></param>
+        /// <param name="type"></param>
+        protected virtual void OnUnityLog(string condition, string stackTrace, LogType type)
+        {
+            switch (type)
+            {
+                case LogType.Error:
+                    Print(condition, DevConsolePrintType.Error);
+                    break;
+                case LogType.Assert:
+                    Print(condition, DevConsolePrintType.Misc);
+                    break;
+                case LogType.Warning:
+                    Print(condition, DevConsolePrintType.Warning);
+                    break;
+                case LogType.Log:
+                    Print(condition);
+                    break;
+                case LogType.Exception:
+                    Print(condition, DevConsolePrintType.Error);
+                    break;
+            }
+        }
+
         #endregion
 
         #region Protected Utilities
@@ -291,19 +328,18 @@ namespace DevConsole.Behaviours
 
                 if (command != null)
                 {
-                    if (command.cheatModeOnly && (!_allowCheatModeCommands || !_isCheatModeEnabled))
+                    if (command.cheatModeOnly && (!_allowCheatMode || !_isCheatModeEnabled))
                     {
                         Print(CHEAT_MODE_ONLY, DevConsolePrintType.Error);
                         return;
                     }
 
-                    if (command.devModeOnly && (!_allowDevModeCommands || !_isDevModeEnabled))
+                    if (command.devModeOnly && (!_allowDevMode || !_isDevModeEnabled))
                     {
                         Print(DEV_MODE_ONLY, DevConsolePrintType.Error);
                         return;
                     }
                     
-                    if (_logCommandsToConsole) DebugLogToConsole(string.Format(LOG_COMMAND, commandText, string.Join(",", arguments)), "ParseText");
                     command.Execute(arguments);
                     OnCommandExecuted(command, arguments);
                 }
@@ -470,15 +506,16 @@ namespace DevConsole.Behaviours
 
         public void SetCheatMode(bool cheatMode)
         {
-            if (!_allowCheatModeCommands)
+            if (!_allowCheatMode)
             {
-                if (_logUnityEventsToConsole) Debug.LogError(CHEAT_MODE_DISABLED);
+                if (_debug) Debug.LogError(CHEAT_MODE_DISABLED);
 
                 if (_isCheatModeEnabled)
                 {
                     _isCheatModeEnabled = false;
                     onCheatModeStateChanged?.Invoke(false);
                 }
+                
                 return;
             }
 
@@ -488,15 +525,16 @@ namespace DevConsole.Behaviours
 
         public void SetDevMode(bool devMode)
         {
-            if (!_allowDevModeCommands)
+            if (!_allowDevMode)
             {
-                if (_logUnityEventsToConsole) Debug.LogError(DEV_MODE_DISABLED);
+                if (_debug) Debug.LogError(DEV_MODE_DISABLED);
                 
                 if (_isDevModeEnabled)
                 {
                     _isDevModeEnabled = false;
                     onDevModeStateChanged?.Invoke(false);
                 }
+                
                 return;
             }
 
