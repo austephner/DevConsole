@@ -13,7 +13,7 @@ namespace DevConsole.Examples
 
         private void Start()
         {
-            _open = DevConsoleBehaviour.Instance?.isOpen ?? false;
+            _open = DevConsole.isOpen;
         }
         
         private void Update()

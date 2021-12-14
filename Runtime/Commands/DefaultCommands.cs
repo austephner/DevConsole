@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DevConsole.Behaviours;
-using DevConsole.Enums;
 
 namespace DevConsole.Commands
 {
@@ -22,7 +20,7 @@ namespace DevConsole.Commands
 
         public override void Execute(List<string> parameters)
         {
-            DevConsoleBehaviour.Instance.Print(string.Join(" ", parameters));
+            DevConsole.Print(string.Join(" ", parameters));
         }
     }
     
@@ -45,14 +43,14 @@ namespace DevConsole.Commands
         {
             if (parameters.Count == 0)
             {
-                foreach (var command in DevConsoleBehaviour.Instance.GetAllRegisteredCommands())
+                foreach (var command in DevConsole.GetAllRegisteredCommands())
                 {
-                    if (command.cheatModeOnly && !DevConsoleBehaviour.Instance.isCheatModeEnabled)
+                    if (command.cheatModeOnly && !DevConsole.isCheatModeEnabled)
                     {
                         continue;
                     }
 
-                    if (command.devModeOnly && !DevConsoleBehaviour.Instance.isDevModeEnabled)
+                    if (command.devModeOnly && !DevConsole.isDevModeEnabled)
                     {
                         continue;
                     }
@@ -64,28 +62,28 @@ namespace DevConsole.Commands
                         continue;
                     }
                     
-                    DevConsoleBehaviour.Instance.Print($"{string.Join(", ", command.GetNames())} --> <i> {help}</i>");
+                    DevConsole.Print($"{string.Join(", ", command.GetNames())} --> <i> {help}</i>");
                 }
             }
             else
             {
-                var command = DevConsoleBehaviour.Instance.GetCommandByName(parameters[0]);
+                var command = DevConsole.GetCommandByName(parameters[0]);
 
                 if (command == null || 
-                    command.cheatModeOnly && !DevConsoleBehaviour.Instance.isCheatModeEnabled ||
-                    command.devModeOnly && !DevConsoleBehaviour.Instance.isDevModeEnabled)
+                    command.cheatModeOnly && !DevConsole.isCheatModeEnabled ||
+                    command.devModeOnly && !DevConsole.isDevModeEnabled)
                 {
                     PrintNotAvailable();
                     return;
                 }
                 
-                DevConsoleBehaviour.Instance.Print(command.GetHelp());
+                DevConsole.Print(command.GetHelp());
             }
         }
 
         private void PrintNotAvailable()
         {
-            DevConsoleBehaviour.Instance.Print("Help for this command is not available.", DevConsolePrintType.Error);
+            DevConsole.PrintError("Help for this command is not available.");
         }
     }
 
@@ -106,7 +104,7 @@ namespace DevConsole.Commands
 
         public override void Execute(List<string> parameters)
         {
-            DevConsoleBehaviour.Instance.Clear();
+            DevConsole.Clear();
         }
     }
 
@@ -122,7 +120,7 @@ namespace DevConsole.Commands
 
         public override void Execute(List<string> parameters)
         {
-            DevConsoleBehaviour.Instance.Print(DateTime.Now.ToString("g"));
+            DevConsole.Print(DateTime.Now.ToString("g"));
         }
     }
 }

@@ -98,9 +98,7 @@ namespace DevConsole.Examples
 
             if (!basicConsoleDisplayBehaviour)
             {
-                DevConsoleBehaviour.Instance.Print(
-                    "No basic console display behaviour detected.",
-                    DevConsolePrintType.Error);
+                DevConsole.PrintError("No basic console display behaviour detected.");
                 return;
             }
 
@@ -114,15 +112,11 @@ namespace DevConsole.Examples
                         .Select(dt => dt.text.text)
                         .ToList());
                 
-                DevConsoleBehaviour.Instance.Print(
-                    $"Dumped to:\n{filePath}", 
-                    DevConsolePrintType.Success);
+                DevConsole.PrintSuccess($"Dumped to:\n{filePath}");
             }
             catch (Exception exception)
             {
-                DevConsoleBehaviour.Instance.Print(
-                    $"Failed to dump file, reason: {exception.Message}",
-                    DevConsolePrintType.Error);
+                DevConsole.PrintError($"Failed to dump file, reason: {exception.Message}");
             }
         }
     }

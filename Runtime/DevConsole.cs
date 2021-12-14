@@ -1,5 +1,8 @@
-﻿using DevConsole.Behaviours;
+﻿using System.Collections.Generic;
+using DevConsole.Behaviours;
+using DevConsole.Commands;
 using DevConsole.Enums;
+using static DevConsole.Behaviours.DevConsoleBehaviour;
 
 namespace DevConsole
 {
@@ -8,50 +11,44 @@ namespace DevConsole
     /// </summary>
     public static class DevConsole
     {
-        public static void Print(string message)
-        {
-            DevConsoleBehaviour.Instance?.Print(message);
-        }
+        public static void Print(string message) => Instance?.Print(message);
 
-        public static void Print(string message, DevConsolePrintType printType)
-        {
-            DevConsoleBehaviour.Instance?.Print(message, printType);
-        }
+        public static void Print(string message, DevConsolePrintType printType) => Instance?.Print(message, printType);
 
-        public static void PrintError(string message)
-        {
-            DevConsoleBehaviour.Instance?.Print(message, DevConsolePrintType.Error);
-        }
-
-        public static void PrintWarning(string message)
-        {
-            DevConsoleBehaviour.Instance?.Print(message, DevConsolePrintType.Warning);
-        }
+        public static void PrintError(string message) => Instance?.Print(message, DevConsolePrintType.Error);
         
-        public static void PrintSuccess(string message)
+        public static void PrintWarning(string message) => Instance?.Print(message, DevConsolePrintType.Warning);
+
+        public static void PrintSuccess(string message) => Instance?.Print(message, DevConsolePrintType.Success);
+        
+        public static void Toggle() => Instance?.Toggle();
+
+        public static void Open() => Instance?.Open();
+        
+        public static void Close() => Instance?.Close();
+
+        public static void Clear() => Instance?.Clear();
+
+        public static List<DevConsoleCommand> GetAllRegisteredCommands() => Instance?.GetAllRegisteredCommands();
+
+        public static DevConsoleCommand GetCommandByName(string name) => Instance?.GetCommandByName(name);
+
+        public static bool isOpen => Instance?.isOpen ?? false;
+
+        public static bool isDevModeEnabled => Instance?.isDevModeEnabled ?? false;
+
+        public static bool isCheatModeEnabled => Instance?.isCheatModeEnabled ?? false;
+
+        public static string inputBuffer
         {
-            DevConsoleBehaviour.Instance?.Print(message, DevConsolePrintType.Success);
+            get => Instance?.inputBuffer;
+            set
+            {
+                if (Instance)
+                {
+                    Instance.inputBuffer = value;
+                }
+            }
         }
-
-        public static void Toggle()
-        {
-            DevConsoleBehaviour.Instance?.Toggle();
-        }
-
-        public static void Open()
-        {
-            DevConsoleBehaviour.Instance?.Open();
-        }
-
-        public static void Close()
-        {
-            DevConsoleBehaviour.Instance?.Close();
-        }
-
-        public static bool isOpen => DevConsoleBehaviour.Instance?.isOpen ?? false;
-
-        public static bool isDevModeEnabled => DevConsoleBehaviour.Instance?.isDevModeEnabled ?? false;
-
-        public static bool isCheatModeEnabled => DevConsoleBehaviour.Instance?.isCheatModeEnabled ?? false;
     }
 }
