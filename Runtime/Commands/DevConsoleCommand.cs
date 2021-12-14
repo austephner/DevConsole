@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DevConsole.Commands
+namespace DevConsole.Runtime.Commands
 {
     public abstract class DevConsoleCommand
     {

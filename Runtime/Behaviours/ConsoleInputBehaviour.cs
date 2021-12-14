@@ -1,7 +1,7 @@
-﻿using DevConsole.Enums;
+﻿using DevConsole.Runtime.Enums;
 using UnityEngine;
 
-namespace DevConsole.Behaviours
+namespace DevConsole.Runtime.Behaviours
 {
     public abstract class ConsoleInputBehaviour : MonoBehaviour
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DevConsole.Utilities
+namespace DevConsole.Runtime.Utilities
 {
     internal static class TypeUtil
     {

@@ -1,4 +1,4 @@
-﻿namespace DevConsole.Enums
+﻿namespace DevConsole.Runtime.Enums
 {
     public enum DevConsolePrintType
     {

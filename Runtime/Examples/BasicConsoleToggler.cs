@@ -1,7 +1,7 @@
-﻿using DevConsole.Behaviours;
+﻿using DevConsole.Runtime.Behaviours;
 using UnityEngine;
 
-namespace DevConsole.Examples
+namespace DevConsole.Runtime.Examples
 {
     public class BasicConsoleToggler : MonoBehaviour
     {

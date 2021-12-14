@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DevConsole.Behaviours;
+using DevConsole.Runtime.Behaviours;
 
-namespace DevConsole.Commands
+namespace DevConsole.Runtime.Commands
 {
     /// <summary>
     /// Prints all parameterized text to the console.

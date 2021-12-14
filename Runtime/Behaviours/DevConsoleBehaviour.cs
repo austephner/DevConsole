@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DevConsole.Commands;
-using DevConsole.CustomEvents;
-using DevConsole.Enums;
-using DevConsole.Utilities;
+using DevConsole.Runtime.Commands;
+using DevConsole.Runtime.CustomEvents;
+using DevConsole.Runtime.Enums;
+using DevConsole.Runtime.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace DevConsole.Behaviours
+namespace DevConsole.Runtime.Behaviours
 {
     public class DevConsoleBehaviour : MonoBehaviour
     {
