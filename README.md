@@ -11,16 +11,23 @@ A simple in-game developer console with easy-to-implement commands and scripting
 - Tons of events to hook into. This includes `UnityEvent`, inheritable class events, and `static Action` events
 - Navigable command and input history
 - Working console prefab included, ready to be customized!
+- Separate "Dev Mode" and "Cheat Mode" with the ability to specify commands that should only be ran during certain modes of the console
 
 #### Todo
 - Some functions/classes need additional documentation
 - Scripting for executing a series of commands from a text file or string
 - Configurable commands that can be created in the inspector with `UnityEvent` and require no coding.
+- Control improvements in the example console.
+- Improved README documentation to describe all settings/configurations/options for the console's game object.
 
 # Getting Started
 1. Import the package or Github content into your Assets folder
-2. Drag and drop the "basic dev console" prefab from `DevConsole/Demo/Prefabs` into your scene
-3. Start the game and begin using the console as needed!
+   - Get the HTTPS Github link to this repo and add it through the Package Manager
+   - OR Clone the repo to a zip and extract the contents to your Assets folder
+2. Drag and drop the "basic dev console" prefab from `Packages/DevConsole/Samples/Prefabs` into your scene
+3. Add an "EventSystem" into your scene if one doesn't already exist. The UI for the basic dev console won't work otherwise.
+4. Start the game and begin using the console as needed!
+   - Configure the console through the inspector
 
 Note that this API does come with some default commands, but to embrace the power of this asset you'll have to make your own.
 
