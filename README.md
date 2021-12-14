@@ -68,3 +68,6 @@ public class HelloWorldCommand : DevConsoleCommand
         }
 }
 ```
+
+# Credits
+Thanks to the [Unity Discord Community](https://discord.com/invite/unity) for helping settle the package issues with this repo.
