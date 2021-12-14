@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DevConsole.Runtime.Commands;
-using DevConsole.Runtime.CustomEvents;
-using DevConsole.Runtime.Enums;
-using DevConsole.Runtime.Utilities;
+using DevConsole.Commands;
+using DevConsole.CustomEvents;
+using DevConsole.Enums;
+using DevConsole.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace DevConsole.Runtime.Behaviours
+namespace DevConsole.Behaviours
 {
     public class DevConsoleBehaviour : MonoBehaviour
     {
@@ -139,15 +139,15 @@ namespace DevConsole.Runtime.Behaviours
 
         public bool isClosed => !isOpen;
 
-        public bool devMode => _devMode;
+        public bool isDevModeEnabled => _isDevModeEnabled;
 
-        public bool cheatMode => _cheatMode;
+        public bool isCheatModeEnabled => _isCheatModeEnabled;
 
         #endregion
 
         #region Protected Fields
 
-        protected bool _open, _cheatMode, _devMode;
+        protected bool _open, _isCheatModeEnabled, _isDevModeEnabled;
 
         protected List<DevConsoleCommand> _devConsoleCommands = new List<DevConsoleCommand>();
 
@@ -291,13 +291,13 @@ namespace DevConsole.Runtime.Behaviours
 
                 if (command != null)
                 {
-                    if (command.cheatModeOnly && (!_allowCheatModeCommands || !_cheatMode))
+                    if (command.cheatModeOnly && (!_allowCheatModeCommands || !_isCheatModeEnabled))
                     {
                         Print(CHEAT_MODE_ONLY, DevConsolePrintType.Error);
                         return;
                     }
 
-                    if (command.devModeOnly && (!_allowDevModeCommands || !_devMode))
+                    if (command.devModeOnly && (!_allowDevModeCommands || !_isDevModeEnabled))
                     {
                         Print(DEV_MODE_ONLY, DevConsolePrintType.Error);
                         return;
@@ -474,15 +474,15 @@ namespace DevConsole.Runtime.Behaviours
             {
                 if (_logUnityEventsToConsole) Debug.LogError(CHEAT_MODE_DISABLED);
 
-                if (_cheatMode)
+                if (_isCheatModeEnabled)
                 {
-                    _cheatMode = false;
+                    _isCheatModeEnabled = false;
                     onCheatModeStateChanged?.Invoke(false);
                 }
                 return;
             }
 
-            _cheatMode = cheatMode;
+            _isCheatModeEnabled = cheatMode;
             onCheatModeStateChanged?.Invoke(cheatMode);
         }
 
@@ -492,15 +492,15 @@ namespace DevConsole.Runtime.Behaviours
             {
                 if (_logUnityEventsToConsole) Debug.LogError(DEV_MODE_DISABLED);
                 
-                if (_devMode)
+                if (_isDevModeEnabled)
                 {
-                    _devMode = false;
+                    _isDevModeEnabled = false;
                     onDevModeStateChanged?.Invoke(false);
                 }
                 return;
             }
 
-            _devMode = devMode;
+            _isDevModeEnabled = devMode;
             onDevModeStateChanged?.Invoke(devMode);
         }
         

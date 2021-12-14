@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using DevConsole.Runtime.Behaviours;
-using DevConsole.Runtime.Enums;
+﻿using System;
+using System.Collections.Generic;
+using DevConsole.Behaviours;
+using DevConsole.Enums;
 
-namespace DevConsole.Runtime.Commands
+namespace DevConsole.Commands
 {
     /// <summary>
     /// Prints all parameterized text to the console.
@@ -46,12 +47,12 @@ namespace DevConsole.Runtime.Commands
             {
                 foreach (var command in DevConsoleBehaviour.Instance.GetAllRegisteredCommands())
                 {
-                    if (command.cheatModeOnly && !DevConsoleBehaviour.Instance.cheatMode)
+                    if (command.cheatModeOnly && !DevConsoleBehaviour.Instance.isCheatModeEnabled)
                     {
                         continue;
                     }
 
-                    if (command.devModeOnly && !DevConsoleBehaviour.Instance.devMode)
+                    if (command.devModeOnly && !DevConsoleBehaviour.Instance.isDevModeEnabled)
                     {
                         continue;
                     }
@@ -71,8 +72,8 @@ namespace DevConsole.Runtime.Commands
                 var command = DevConsoleBehaviour.Instance.GetCommandByName(parameters[0]);
 
                 if (command == null || 
-                    command.cheatModeOnly && !DevConsoleBehaviour.Instance.cheatMode ||
-                    command.devModeOnly && !DevConsoleBehaviour.Instance.devMode)
+                    command.cheatModeOnly && !DevConsoleBehaviour.Instance.isCheatModeEnabled ||
+                    command.devModeOnly && !DevConsoleBehaviour.Instance.isDevModeEnabled)
                 {
                     PrintNotAvailable();
                     return;
@@ -106,6 +107,22 @@ namespace DevConsole.Runtime.Commands
         public override void Execute(List<string> parameters)
         {
             DevConsoleBehaviour.Instance.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Displays <see cref="DateTime.Now"/>
+    /// </summary>
+    public class TimeCommand : DevConsoleCommand
+    {
+        public override string[] GetNames()
+        {
+            return new string[] { "time" };
+        }
+
+        public override void Execute(List<string> parameters)
+        {
+            DevConsoleBehaviour.Instance.Print(DateTime.Now.ToString("g"));
         }
     }
 }

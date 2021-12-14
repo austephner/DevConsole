@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine.Events;
 
-namespace DevConsole.Runtime.CustomEvents
+namespace DevConsole.CustomEvents
 {
     [Serializable]
     public class StringUnityEvent : UnityEvent<string>

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using DevConsole.Runtime.Behaviours;
-using DevConsole.Runtime.Enums;
+using DevConsole.Behaviours;
+using DevConsole.Enums;
 using UnityEngine;
 
-namespace DevConsole.Runtime.Examples
+namespace DevConsole.Examples
 {
     /// <summary>
     /// Uses the old standard Unity input manager to get key-down state information. Very basic and rudimentary but

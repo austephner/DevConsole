@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace DevConsole.Runtime.Utilities
+namespace DevConsole.Utilities
 {
     public static class ColorUtility
     {

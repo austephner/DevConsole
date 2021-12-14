@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DevConsole.Runtime.Behaviours;
-using DevConsole.Runtime.Commands;
-using DevConsole.Runtime.Enums;
-using DevConsole.Runtime.Utilities;
+using DevConsole.Behaviours;
+using DevConsole.Commands;
+using DevConsole.Enums;
+using DevConsole.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DevConsole.Runtime.Examples
+namespace DevConsole.Examples
 {
     public class BasicConsoleDisplayBehaviour : ConsoleDisplayBehaviour
     {

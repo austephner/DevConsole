@@ -1,7 +1,7 @@
-﻿using DevConsole.Runtime.Enums;
+﻿using DevConsole.Enums;
 using UnityEngine;
 
-namespace DevConsole.Runtime.Behaviours
+namespace DevConsole.Behaviours
 {
     /// <summary>
     /// Handles displaying text from a <see cref="DevConsoleBehaviour"/>.

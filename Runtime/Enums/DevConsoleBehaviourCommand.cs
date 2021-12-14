@@ -1,4 +1,4 @@
-﻿namespace DevConsole.Runtime.Enums
+﻿namespace DevConsole.Enums
 {
     public enum DevConsoleBehaviourCommand
     {

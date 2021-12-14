@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace DevConsole.Runtime.Examples
+namespace DevConsole.Examples
 {
     public class BasicConsoleDisplayText : MonoBehaviour
     {
