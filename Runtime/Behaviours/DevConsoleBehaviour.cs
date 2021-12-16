@@ -35,39 +35,39 @@ namespace DevConsole.Behaviours
         #region Settings
 
         [Header("General"), SerializeField, FormerlySerializedAs("_logUnityEventsToConsole"),
-        Tooltip("When enabled, this DevConsoleBehaviour will regularly log information to the console such as " +
+         Tooltip("When enabled, this DevConsoleBehaviour will regularly log information to the console such as " +
                 "exceptions, invocations, etc.")] 
         protected bool _debug;
 
         [SerializeField,
-        Tooltip("Enable if this DevConsoleBehaviour is considered open when the game starts.")]
+         Tooltip("Enable if this DevConsoleBehaviour is considered open when the game starts.")]
         protected bool _startsOpen;
         
         [SerializeField,
-        Tooltip("When enabled, \"Open()\" will be called when this DevConsoleBehaviour starts and" +
+         Tooltip("When enabled, \"Open()\" will be called when this DevConsoleBehaviour starts and" +
                 " automatically open.")]
         protected bool _openOnStart;
 
         [SerializeField,
-        Tooltip("When enabled, Unity console logs will appear in this DevConsoleBehaviour. Avoid toggling this field during runtime.")] 
+         Tooltip("When enabled, Unity console logs will appear in this DevConsoleBehaviour. Avoid toggling this field during runtime.")] 
         protected bool _printUnityConsoleLogs;
         
         [SerializeField,
-        Tooltip("If the user attempts to submit a command that doesn't exist, the console will print an " +
+         Tooltip("If the user attempts to submit a command that doesn't exist, the console will print an " +
                 "error message.")] 
         protected bool _showCommandDoesntExistError = true;
 
         [SerializeField,
-        Tooltip("When enabled the console will clear the input buffer after \"Submit()\" is called.")] 
+         Tooltip("When enabled the console will clear the input buffer after \"Submit()\" is called.")] 
         protected bool _clearInputBufferAfterSubmit = true;
         
         [SerializeField,
-        Tooltip("Allows the usage of \"Dev Mode\". When disabled, \"SetDevMode(...)\" cannot be called and " +
+         Tooltip("Allows the usage of \"Dev Mode\". When disabled, \"SetDevMode(...)\" cannot be called and " +
                 "dev-mode-only commands cannot be executed..")] 
         protected bool _allowDevMode = true;
         
         [SerializeField,
-        Tooltip("When enabled, this DevConsoleBehaviour will enter \"Dev Mode\" on start if possible.")] 
+         Tooltip("When enabled, this DevConsoleBehaviour will enter \"Dev Mode\" on start if possible.")] 
         protected bool _enableDevModeOnStart;
 
         [FormerlySerializedAs("_allowCheatModeCommands"), SerializeField,
@@ -80,8 +80,12 @@ namespace DevConsole.Behaviours
         protected bool _enableCheatModeOnStart;
         
         [SerializeField,
-        Tooltip("The total number of entries the console will remember.")] 
+         Tooltip("The total number of entries the console will remember.")] 
         protected float _maxHistory = 100;
+        
+        [SerializeField,
+         Tooltip("The default message that's automatically displayed in the console when the game starts.")]
+        private string _startMessage = "";
 
         [Header("Components"), SerializeField,
         Tooltip("Determines how input is handled when updating this console.")] 
@@ -193,6 +197,7 @@ namespace DevConsole.Behaviours
             if (_openOnStart && !_open) Open();
             if (_enableCheatModeOnStart) SetCheatMode(true);
             if (_enableDevModeOnStart) SetDevMode(true);
+            if (!string.IsNullOrWhiteSpace(_startMessage)) Print(_startMessage);
             
             OnInitialize();
             onInitialized?.Invoke();
