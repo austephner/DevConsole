@@ -12,7 +12,7 @@ namespace DevConsole.Examples
 
         private void Start()
         {
-            _open = DevConsole.isOpen;
+            _open = Console.isOpen;
         }
         
         private void Update()

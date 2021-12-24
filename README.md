@@ -5,7 +5,7 @@ A simple in-game developer console with easy-to-implement commands and scripting
 ![Example](https://i.imgur.com/hWwjmZl.gif)
 
 #### Features
-- Easily code new commands with no additional setup - just implement the command class!
+- Easily create new commands **from the inspector** or **C#**!
 - Some default/starter commands are included
 - Modular and extensible components
 - Tons of events to hook into. This includes `UnityEvent`, inheritable class events, and `static Action` events
@@ -16,9 +16,7 @@ A simple in-game developer console with easy-to-implement commands and scripting
 #### Todo
 - Some functions/classes need additional documentation
 - Scripting for executing a series of commands from a text file or string
-- Configurable commands that can be created in the inspector with `UnityEvent` and require no coding.
 - Control improvements in the example console.
-- Improved README documentation to describe all settings/configurations/options for the console's game object.
 
 # Getting Started
 1. Import the package or Github content into your Assets folder
@@ -41,11 +39,21 @@ Note that this API does come with some default commands, but to embrace the powe
 | Previous Command  | Assigns the "previous" command sent relative to the current history position into the input buffer.  | Up Arrow |
 | Next Command  | Assigns the "next" command sent relative to the current history position into the input buffer. | Down Arrow |
 
-### Creating New Commands
-The system uses C# Reflection to find commands. All you have to do is implement the `DevConsoleCommand` class and start the game.
+# Creating New Commands
+There's two main ways to create new commands.
+
+### From the Inspector (Basic)
+1. Select the `DevConsoleBehaviour` game object in the scene. 
+2. Under the "Misc" section in the component's inspector, find the "Unity Event Commands" array. 
+3. Add a new element and configure/customize the command as needed. <br><br>
+![Unity Event Example](https://i.imgur.com/be4E1dd.png)
+
+### From Code (C#)
+The system uses C# Reflection to find commands. All you have to do is implement the `DevConsoleCommand` class and start the game. This command is included within the examples.
 ```c#
 using System.Collections.Generic;
 using DevConsole;
+using DevConsole.Commands;
 
 public class HelloWorldCommand : DevConsoleCommand 
 {
@@ -58,7 +66,7 @@ public class HelloWorldCommand : DevConsoleCommand
         // The action that actually happens when this command is executed.
         public override void Execute(List<string> parameters)
         {
-            DevConsole.Print("Hello world!");
+            Console.Print("Hello world!");
         }
         
         // (OPTIONAL) The text displayed when the "help helloworld" or "help hw" command is executed
@@ -93,7 +101,7 @@ This section describes how to configure a `DevConsoleBehaviour`.
 | Enable Dev Mode On Start | When enabled, the `DevConsoleBehaviour` will automatically enter "Dev Mode" if possible when it starts. |
 | Allow Cheat Mode | Allows the usage of "Cheat Mode". If disabled, `SetCheatMode(...)` cannot be called and cheat-mode-only commands cannot be executed. |
 | Enable Cheat Mode On Start | When enabled, the `DevConsoleBehaviour` will automatically enter "Cheat Mode" if possible when it starts. | 
-| Max History | The maximum amount of entries the console will remember. 
+| Max History | The maximum amount of entries the console will remember. |
 
 ### Components
 | Field | Description | 

@@ -10,7 +10,7 @@ namespace DevConsole.Examples
         
         public void OnTextChanged(string value)
         {
-            DevConsole.inputBuffer = value;
+            Console.inputBuffer = value;
         }
 
         public void OnInputBufferChanged(string value)

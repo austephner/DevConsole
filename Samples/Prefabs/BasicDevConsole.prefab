@@ -1298,6 +1298,7 @@ MonoBehaviour:
   successTextColor: {r: 0, g: 1, b: 0, a: 1}
   warningTextColor: {r: 1, g: 0.5, b: 0.1, a: 1}
   errorTextColor: {r: 1, g: 0.1, b: 0.1, a: 1}
+  displayTexts: []
 --- !u!1 &627915361458349904
 GameObject:
   m_ObjectHideFlags: 0
@@ -2072,16 +2073,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2508d0ce3de439885b983d64af58804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _logUnityEventsToConsole: 1
+  _debug: 1
   _startsOpen: 1
   _openOnStart: 1
-  _logCommandsToConsole: 0
-  _logUnityApplicationMessages: 0
+  _printUnityConsoleLogs: 0
   _showCommandDoesntExistError: 1
   _clearInputBufferAfterSubmit: 1
+  _allowDevMode: 1
+  _enableDevModeOnStart: 0
+  _allowCheatMode: 0
+  _enableCheatModeOnStart: 0
   _maxHistory: 100
+  _startMessage: 
   _consoleInputBehaviour: {fileID: 627915362310615800}
   _consoleDisplayBehaviour: {fileID: 627915361454453137}
+  _unityEventCommands:
+  - _names:
+    - ToggleConsole
+    - Toggle
+    _helpText: Toggles the console.
+    _devModeOnly: 0
+    _cheatModeOnly: 0
+    _onInvoke:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 627915361985457360}
+          m_TargetAssemblyTypeName: DevConsole.Behaviours.DevConsoleBehaviour, austephnerllc.devconsole
+          m_MethodName: Toggle
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    _onParameterInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - _names:
+    - Close
+    _helpText: Closes the console.
+    _devModeOnly: 0
+    _cheatModeOnly: 0
+    _onInvoke:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 627915361985457360}
+          m_TargetAssemblyTypeName: DevConsole.Behaviours.DevConsoleBehaviour, austephnerllc.devconsole
+          m_MethodName: Close
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    _onParameterInvoke:
+      m_PersistentCalls:
+        m_Calls: []
   _onInitialized:
     m_PersistentCalls:
       m_Calls: []

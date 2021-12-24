@@ -88,12 +88,17 @@ namespace DevConsole.Behaviours
         private string _startMessage = "";
 
         [Header("Components"), SerializeField,
-        Tooltip("Determines how input is handled when updating this console.")] 
+         Tooltip("Determines how input is handled when updating this console.")] 
         protected ConsoleInputBehaviour _consoleInputBehaviour;
 
         [SerializeField,
-        Tooltip("Determines how printing and clearing text is handled for this console.")] 
+         Tooltip("Determines how printing and clearing text is handled for this console.")] 
         protected ConsoleDisplayBehaviour _consoleDisplayBehaviour;
+
+        [Header("Misc"),
+         SerializeField,
+         Tooltip("Commands that can be added to the behaviour through the inspector.")]
+        protected UnityEventCommand[] _unityEventCommands = new UnityEventCommand[0];
 
         [Header("Events"), SerializeField] 
         protected UnityEvent _onInitialized;
@@ -189,8 +194,14 @@ namespace DevConsole.Behaviours
 
             _devConsoleCommands = 
                 TypeUtil.GetNonAbstractSubTypes(typeof(DevConsoleCommand))
+                    .Where(type => Attribute.GetCustomAttribute(type, typeof(NonLoadableCommandAttribute)) == null)
                     .Select(devConsoleCommand => (DevConsoleCommand) Activator.CreateInstance(devConsoleCommand))
                     .ToList();
+
+            foreach (var unityEventCommand in _unityEventCommands)
+            {
+                _devConsoleCommands.Add(unityEventCommand);
+            }
 
             if (_printUnityConsoleLogs) Application.logMessageReceived += OnUnityLog;
             if (_startsOpen) _open = true;
