@@ -39,6 +39,9 @@ namespace DevConsole.Behaviours
                 "exceptions, invocations, etc.")] 
         protected bool _debug;
 
+        [SerializeField] 
+        protected bool _dontDestroyOnLoad = true;
+
         [SerializeField,
          Tooltip("Enable if this DevConsoleBehaviour is considered open when the game starts.")]
         protected bool _startsOpen;
@@ -191,6 +194,8 @@ namespace DevConsole.Behaviours
             if (_debug) DebugLogToConsole(UNITY_EVENT_INIT_SUCCESS, "OnEnable");
             
             Instance = this;
+            
+            if (_dontDestroyOnLoad) DontDestroyOnLoad(gameObject);
 
             _devConsoleCommands = 
                 TypeUtil.GetNonAbstractSubTypes(typeof(DevConsoleCommand))
