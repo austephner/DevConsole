@@ -1,6 +1,6 @@
 {
   "name": "com.austephnerllc.devconsole",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "displayName": "Dev Console",
   "description": "A simple in-game developer console with easy-to-implement commands and scripting.",
   "unity": "2020.3",

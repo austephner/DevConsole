@@ -1,4 +1,4 @@
-# DevConsole [v1.4.2]
+# DevConsole [v1.4.3]
 #### Summary
 A simple in-game developer console with easy-to-implement commands and scripting.
 

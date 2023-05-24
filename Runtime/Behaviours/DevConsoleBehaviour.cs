@@ -211,6 +211,7 @@ namespace DevConsole.Behaviours
             if (_printUnityConsoleLogs) Application.logMessageReceived += OnUnityLog;
             if (_startsOpen) _open = true;
             if (_openOnStart && !_open) Open();
+            else if (_open) Close();
             if (_enableCheatModeOnStart) SetCheatMode(true);
             if (_enableDevModeOnStart) SetDevMode(true);
             if (!string.IsNullOrWhiteSpace(_startMessage)) Print(_startMessage);
