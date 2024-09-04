@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace DevConsole.Commands
 {
@@ -29,5 +30,14 @@ namespace DevConsole.Commands
         /// </summary>
         /// <param name="parameters">All parameters from the console input which have been separated by spaces.</param>
         public abstract void Execute(List<string> parameters);
+        
+        /// <summary>
+        /// Called when this command is executed by the console.
+        /// </summary>
+        /// <param name="parameters">All parameters from the console input which have been separated by spaces.</param>
+        public virtual IEnumerator ExecuteAsync(List<string> parameters)
+        {
+            yield break;
+        }
     }
 }

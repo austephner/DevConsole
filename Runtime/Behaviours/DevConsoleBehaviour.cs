@@ -363,6 +363,7 @@ namespace DevConsole.Behaviours
                     }
                     
                     command.Execute(arguments);
+                    StartCoroutine(command.ExecuteAsync(arguments));
                     OnCommandExecuted(command, arguments);
                 }
                 else if (_showCommandDoesntExistError)
